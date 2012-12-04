@@ -1,2 +1,7 @@
 syntax: glob
 *.suo
+DataVirtualization/obj/*
+DataVirtualizationDemo/obj/*
+Release/*
+Debug/*
+*.user

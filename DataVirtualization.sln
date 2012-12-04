@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataVirtualization", "DataVirtualization\DataVirtualization.csproj", "{48E0EB7C-30B3-4A98-89BC-732039BEF625}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataVirtualizationDemo", "DataVirtualizationDemo\DataVirtualizationDemo.csproj", "{722DDA67-EA49-4A83-BC07-0739C1A608A5}"
