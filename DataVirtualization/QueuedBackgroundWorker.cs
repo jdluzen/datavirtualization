@@ -78,7 +78,7 @@ namespace DevZest.Windows.DataVirtualization
             if (this._synchronizationContext == null || SynchronizationContext.Current != null)
                 RaiseStateChangedEvent(null);
             else
-                _synchronizationContext.Send(RaiseStateChangedEvent, null);
+                _synchronizationContext.Post(RaiseStateChangedEvent, null);
         }
 
         void RaiseStateChangedEvent(object args)
