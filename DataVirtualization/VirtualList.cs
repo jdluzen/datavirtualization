@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Threading;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Threading;
 
 namespace DevZest.Windows.DataVirtualization
 {
@@ -116,6 +114,10 @@ namespace DevZest.Windows.DataVirtualization
                 else
                     _list[index].Data = pageData[i];
             }
+            /*for (int i = 0; i < startIndex; i++)
+                _list[i] = null;
+            for (int i = startIndex + _pageSize; i < _list.Length; i++)
+                _list[i] = null;*/
             if (flagRefresh)
             {
                 if (this._synchronizationContext == null || SynchronizationContext.Current != null)
