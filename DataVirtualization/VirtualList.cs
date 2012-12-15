@@ -27,6 +27,17 @@ namespace DevZest.Windows.DataVirtualization
         QueuedBackgroundWorker<int> _pageRequests;
         readonly SynchronizationContext _synchronizationContext;
 
+        /// <summary>
+        /// Call this protected .ctor to indicate that the subclass implements IVirtualListLoader<T>
+        /// </summary>
+        protected VirtualList()
+            : this(null)
+        {
+            if (!(this is IVirtualListLoader<T>))
+                throw new InvalidCastException(string.Format("This class of type `{0}` must implement IVirtualListLoader<T> to use this .ctor", GetType().Name));
+            _loader = (IVirtualListLoader<T>)this;
+        }
+
         public VirtualList(IVirtualListLoader<T> loader)
             : this(loader, DefaultPageSize, SynchronizationContext.Current)
         {
@@ -39,7 +50,7 @@ namespace DevZest.Windows.DataVirtualization
 
         public VirtualList(IVirtualListLoader<T> loader, int pageSize, SynchronizationContext synchronizationContext)
         {
-            if (loader == null)
+            if (loader == null && GetType() == typeof(VirtualList<T>))
                 throw new ArgumentNullException("loader");
             if (pageSize <= 0)
                 throw new ArgumentOutOfRangeException("pageSize");
@@ -274,8 +285,7 @@ namespace DevZest.Windows.DataVirtualization
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            for (int i = 0; i < Count; i++)
-                yield return this[i];
+            return ((IEnumerable<VirtualListItem<T>>)this).GetEnumerator();
         }
 
         #endregion
