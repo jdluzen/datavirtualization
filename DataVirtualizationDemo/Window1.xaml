@@ -53,6 +53,7 @@
             <CheckBox IsChecked="{Binding SimulateDataLoadingError}">Simulate Data Loading Error</CheckBox>
             <StackPanel Orientation="Horizontal">
                 <Button Click="Refresh_Click">Refresh</Button>
+                <Button Click="Add_Click">Add</Button>
             </StackPanel>
 
         </StackPanel>

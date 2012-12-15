@@ -4,10 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Data;
 using System.Windows.Threading;
 using DevZest.Windows.DataVirtualization;
 
@@ -21,6 +19,7 @@ namespace DevZest.DataVirtualizationDemo
         public readonly DependencyProperty ItemCountProperty = DependencyProperty.Register("ItemCount", typeof(int), typeof(Window1), new PropertyMetadata(100000,null ,ItemCountCoerceValue));
         public readonly DependencyProperty CreationOverheadProperty = DependencyProperty.Register("CreationOverhead", typeof(int), typeof(Window1), new PropertyMetadata(3000, null, CreationOverheadCoerceValue));
         public readonly DependencyProperty SimulateDataLoadingErrorProperty = DependencyProperty.Register("SimulateDataLoadingError", typeof(bool), typeof(Window1), new PropertyMetadata(false));
+        List<Person> personList;
         public Window1()
         {
             InitializeComponent();
@@ -73,8 +72,17 @@ namespace DevZest.DataVirtualizationDemo
 
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {
+            personList = new List<Person>();
+            for (int i = 0; i < ItemCount; i++)
+                personList.Add(new Person(i));
             VirtualList<Person> data = new VirtualList<Person>(this);
             listView.ItemsSource = data;
+        }
+
+        private void Add_Click(object sender, RoutedEventArgs e)
+        {
+            personList.Add(new Person(personList.Count));
+            (listView.ItemsSource as VirtualList<Person>).Add();
         }
 
         // This method helps to get dependency property value in another thread.
@@ -100,14 +108,14 @@ namespace DevZest.DataVirtualizationDemo
             if (simulateError)
                 throw new ApplicationException("An simulated data loading error occured. Clear the \"Simulate Data Loading Error\" checkbox and retry.");
 
-            overallCount = Invoke(() => { return ItemCount; });
+            overallCount = personList.Count;
 
             // because the all fields are sorted ascending, the PropertyName is ignored in this sample
             // only Direction is considered.
             SortDescription sortDescription = sortDescriptions == null || sortDescriptions.Count == 0 ? new SortDescription() : sortDescriptions[0];
             ListSortDirection direction = string.IsNullOrEmpty(sortDescription.PropertyName) ? ListSortDirection.Ascending : sortDescription.Direction;
 
-            Person[] persons = new Person[count];
+            List<Person> persons = new List<Person>();
             for (int i = 0; i < count; i++)
             {
                 int index;
@@ -115,8 +123,8 @@ namespace DevZest.DataVirtualizationDemo
                     index = startIndex + i;
                 else
                     index = overallCount - 1 - startIndex - i;
-
-                persons[i] = new Person(index);
+                if (index < personList.Count)
+                    persons.Add(personList[index]);
             }
 
             return persons;

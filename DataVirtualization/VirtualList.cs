@@ -23,7 +23,7 @@ namespace DevZest.Windows.DataVirtualization
         IVirtualListLoader<T> _loader;
         int _version;
         int _pageSize;
-        VirtualListItem<T>[] _list;
+        List<VirtualListItem<T>> _list;
         QueuedBackgroundWorker<int> _pageRequests;
         readonly SynchronizationContext _synchronizationContext;
 
@@ -101,9 +101,11 @@ namespace DevZest.Windows.DataVirtualization
         private void PopulatePageData(int startIndex, IList<T> pageData, int overallCount)
         {
             bool flagRefresh = false;
-            if (_list == null || _list.Length != overallCount)
+            if (_list == null || _list.Count != overallCount)
             {
-                _list = new VirtualListItem<T>[overallCount];
+                _list = new List<VirtualListItem<T>>();
+                for (int i = 0; i < overallCount; i++)
+                    _list.Add(null);
                 flagRefresh = true;
             }
             for (int i = 0; i < pageData.Count; i++)
@@ -115,9 +117,17 @@ namespace DevZest.Windows.DataVirtualization
                     _list[index].Data = pageData[i];
             }
             /*for (int i = 0; i < startIndex; i++)
+            {
+                if (_list[i] != null && _list[i].Data is IDisposable)
+                    ((IDisposable)_list[i].Data).Dispose();
                 _list[i] = null;
-            for (int i = startIndex + _pageSize; i < _list.Length; i++)
-                _list[i] = null;*/
+            }
+            for (int i = startIndex + _pageSize; i < _list.Count; i++)
+            {
+                if (_list[i] != null && _list[i].Data is IDisposable)
+                    ((IDisposable)_list[i].Data).Dispose();
+                _list[i] = null;
+            }*/
             if (flagRefresh)
             {
                 if (this._synchronizationContext == null || SynchronizationContext.Current != null)
@@ -189,7 +199,7 @@ namespace DevZest.Windows.DataVirtualization
 
         public int Count
         {
-            get { return _list == null ? 0 : _list.Length; }
+            get { return _list == null ? 0 : _list.Count; }
         }
 
         public VirtualListItem<T> this[int index]
@@ -220,11 +230,17 @@ namespace DevZest.Windows.DataVirtualization
 
         #endregion
 
+        public void Add()
+        {
+            ((ICollection<VirtualListItem<T>>)this).Add(null);
+            FireCollectionReset(null);
+        }
+
         #region ICollection<VirtualListItem<T>> Members
 
         void ICollection<VirtualListItem<T>>.Add(VirtualListItem<T> item)
         {
-            throw new NotSupportedException();
+            _list.Add(item);
         }
 
         void ICollection<VirtualListItem<T>>.Clear()
