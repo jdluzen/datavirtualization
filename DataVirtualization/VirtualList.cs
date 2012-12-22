@@ -241,10 +241,9 @@ namespace DevZest.Windows.DataVirtualization
 
         #endregion
 
-        public void Add()
+        protected virtual void ItemAdded()
         {
             ((ICollection<VirtualListItem<T>>)this).Add(null);
-            FireCollectionReset(null);
         }
 
         #region ICollection<VirtualListItem<T>> Members
@@ -252,6 +251,7 @@ namespace DevZest.Windows.DataVirtualization
         void ICollection<VirtualListItem<T>>.Add(VirtualListItem<T> item)
         {
             _list.Add(item);
+            FireCollectionReset(null);
         }
 
         void ICollection<VirtualListItem<T>>.Clear()
